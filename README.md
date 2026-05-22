@@ -1,66 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛡️ Planejamento de Projeto: DAADS-Bank CTF (MVP)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este documento detalha o contexto e a estrutura técnica para o desenvolvimento de um sistema de Capture The Flag (CTF) estilo simulador, focado em vulnerabilidades web, para um projeto acadêmico do **DAADS (Diretório Acadêmico de Análise e Desenvolvimento de Sistemas)**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Objetivo
+Desenvolver uma prova de conceito (MVP) que demonstre a capacidade de gerenciar o progresso de segurança de um aluno através de uma plataforma controlada, integrando desafios práticos de cibersegurança em um ambiente bancário fictício.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🏗️ Arquitetura de Sistema: "2 em 1"
+O projeto será construído em um único repositório **Laravel**, utilizando rotas isoladas para separar as duas entidades do ecossistema:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1.  **O Juiz (Site Principal - `/`)**: 
+    *   Interface para o aluno (Frontend em Vue 3).
+    *   Gerenciamento de autenticação e progresso.
+    *   Validação de submissão de flags dinâmicas.
+    *   Exibição de dicas graduais.
 
-## Learning Laravel
+2.  **O Alvo (DAADS-Bank - `/lab`)**:
+    *   Simulador de banco digital (estilo Fintech).
+    *   Ambiente propositalmente vulnerável.
+    *   Contém páginas de Home e "Caixinhas" (estilo Nubank).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🚩 Desafios do MVP (Flags)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+O MVP consistirá em 3 flags geradas dinamicamente para cada usuário, garantindo que o código encontrado pelo Aluno A não funcione para o Aluno B.
 
-## Laravel Sponsors
+| Nível | Vulnerabilidade | Descrição da Exploração |
+| :--- | :--- | :--- |
+| **Fácil 01** | Reconhecimento HTML | A flag está escondida em um comentário de desenvolvedor no código-fonte da página inicial do banco. |
+| **Fácil 02** | Falha de Configuração | O aluno deve acessar o arquivo `/lab/robots.txt` para encontrar o caminho de um diretório oculto que contém a flag. |
+| **Média 03** | IDOR (Broken Access Control) | Na página de **Caixinhas**, o aluno manipula o ID na URL (ex: `/lab/caixinha/12`) para acessar a caixinha de outro usuário e ler a flag. |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+## 🛠️ Especificações Técnicas
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Stack Tecnológica
+- **Backend:** Laravel 11 (PHP 8.2+).
+- **Frontend:** Vue 3 (Composition API).
+- **Banco de Dados:** MySQL ou SQLite (com conexões isoladas para Juiz e Lab).
+- **Hospedagem:** Foco em custo zero (Render, Koyeb ou Fly.io).
 
-## Contributing
+### Pilares de Cibersegurança Aplicados
+- **Integridade:** Uso de hashes para validação de flags e proteção de dados no banco de dados.
+- **Confidencialidade:** Flags dinâmicas geradas via `FlagService` baseadas no ID do usuário + Secret Salt.
+- **Disponibilidade:** Isolamento lógico entre o ambiente de ataque (`/lab`) e o ambiente de gerenciamento (`/`).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🚀 Próximos Passos
+1.  **Modelagem do Banco:** Criar migrations para `users`, `user_flags` e `bank_accounts`.
+2.  **Desenvolvimento do Service:** Implementar a lógica de geração de hashes dinâmicos.
+3.  **Frontend Vue:** Criar o dashboard do Juiz e a interface simulada do DAADS-Bank.
+4.  **Implementação de Falhas:** Codificar as rotas vulneráveis ignorando as proteções nativas do Laravel propositalmente nos locais definidos.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Projeto desenvolvido para fins educacionais - DAADS 2026*
