@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Submeter Flags') }}
+        <h2 class="font-semibold text-xl text-gray-200 leading-tight">
+            {{ __('Contexto Inicial') }}
         </h2>
     </x-slot>
 
@@ -22,7 +22,7 @@
                             Sua missão: infiltrar os sistemas do banco, encontrar as flags escondidas nas brechas de segurança e submetê-las aqui para provar que a invasão foi bem-sucedida.
                         </p>
                         <p class="text-yellow-400 font-semibold">
-                            ⚠️ Cada flag encontrada comprova uma vulnerabilidade real. Quanto mais rápido você agir, mais pontos acumula para o seu time.
+                            ⚠️ Cada flag encontrada comprova uma vulnerabilidade real. Quanto mais rápido você agir, mais chances de ser o primeiro a completar todos os desafios.
                         </p>
                         <p class="text-green-200">
                             Boa sorte, agente. O relógio está correndo.
@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                        <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer"
+                        <a href="{{ route('bank.dashboard') }}" target="_blank" rel="noopener noreferrer"
                            class="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-all duration-200 shadow-lg shadow-green-900/50 hover:shadow-green-800/70">
                             &#x1f310; Acessar DAADS Bank
                             <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

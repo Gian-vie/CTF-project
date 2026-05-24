@@ -142,11 +142,6 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="team_name">Nome do Time</label>
-                    <input type="text" id="team_name" name="team_name" value="{{ old('team_name') }}" placeholder="Ex: HackerSquad" required>
-                </div>
-
-                <div class="form-group">
                     <label for="challenge_id">Desafio</label>
                     <select id="challenge_id" name="challenge_id" required>
                         <option value="">Selecione o desafio...</option>

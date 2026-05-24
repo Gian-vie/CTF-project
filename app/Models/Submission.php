@@ -10,7 +10,7 @@ class Submission extends Model
     use HasFactory;
 
     protected $fillable = [
-        'team_name',
+        'user_id',
         'challenge_id',
         'submitted_flag',
         'is_correct',
@@ -19,5 +19,10 @@ class Submission extends Model
     public function challenge()
     {
         return $this->belongsTo(Challenge::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
     }
 }

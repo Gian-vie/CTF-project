@@ -33,3 +33,10 @@ require __DIR__.'/auth.php';
 
 Route::get('/judge', [JudgeController::class, 'index'])->name('judge');
 Route::post('/judge', [JudgeController::class, 'submit'])->name('judge.submit');
+
+// DAADS Bank (mock frontend)
+Route::prefix('bank')->group(function () {
+    Route::get('/', fn () => view('bank.dashboard'))->name('bank.dashboard');
+    Route::get('/profile', fn () => view('bank.profile'))->name('bank.profile');
+    Route::get('/caixinha', fn () => view('bank.caixinha'))->name('bank.caixinha');
+});
