@@ -143,8 +143,7 @@
 
         <div class="hero">
             <div class="bank-image">
-                {{-- Substituir pelo asset real do banco posteriormente --}}
-                <span>[ Imagem do Banco - DAADS Bank ]</span>
+                <img src="{{ asset('images/banner.png')}}" alt="DAADS Bank" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
 
             <div class="content">
