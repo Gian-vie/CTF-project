@@ -24,7 +24,7 @@ class BankProfileController extends Controller
 
         // VULNERABILIDADE: SQL Injection — campo nome sem sanitização
         // Usa query raw propositalmente para permitir SQLi
-        DB::statement("UPDATE bank_users SET name = '{$request->name}' WHERE id = {$user->id}");
+        DB::unprepared("UPDATE bank_users SET name = '{$request->name}' WHERE id = {$user->id}");
 
         // VULNERABILIDADE: XSS — nome salvo sem escapar, será renderizado sem htmlspecialchars
         return back()->with('success', 'Perfil atualizado com sucesso!');
