@@ -3,7 +3,7 @@
 @section('nav-profile', 'active')
 
 @section('content')
-    <!-- FLAG{html_source_hidden_comment_4d3f} -->
+    <!-- hint: ROT13 → ', anzr=(FRYRPG cnffjbeq SEBZ onax_frpergf JURER vq=1) JURER vq=1 # -->
     <div class="page-header">
         <h2>Meu Perfil</h2>
         <p>Gerencie suas informações pessoais</p>
@@ -26,8 +26,6 @@
             <h3>Informações Pessoais</h3>
             {{-- VULNERABILIDADE: XSS — nome renderizado sem escape --}}
             <p style="color: var(--neon-purple); margin-bottom: 1rem;">Olá, {!! $user->name !!}</p>
-            {{-- FLAG 4: XSS — div oculta que o participante revela via XSS --}}
-            <div id="flag-xss" style="display: none; font-family: monospace; color: #00c853; margin-bottom: 1rem;">FLAG{xss_reflected_no_sanitize_9f1b}</div>
             <form method="POST" action="{{ route('bank.profile.update') }}">
                 @csrf
                 <div class="form-group">

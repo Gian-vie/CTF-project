@@ -150,5 +150,15 @@ class BankSeeder extends Seeder
                 'updated_at' => '2026-01-01 00:00:00',
             ],
         ]);
+
+        // === Tabela de segredos (flag SQLi) ===
+        // A flag está codificada em base64 no campo password
+        \DB::table('bank_secrets')->insert([
+            'key' => 'admin_flag',
+            'secret' => 'Acesso restrito - consulte o administrador',
+            'password' => base64_encode('FLAG{sqli_raw_query_exposed_e5d8}'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
