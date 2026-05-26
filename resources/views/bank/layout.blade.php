@@ -111,6 +111,34 @@
             color: var(--text-muted);
             font-size: 0.7rem;
         }
+        .sidebar-logout {
+            padding: 0.75rem 1.5rem;
+        }
+        .sidebar-logout button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1px solid var(--dark-border);
+            color: var(--text-muted);
+            padding: 0.6rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sidebar-logout button:hover {
+            border-color: #ff5252;
+            color: #ff5252;
+            background: rgba(255,82,82,0.08);
+        }
+        .sidebar-logout button svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
         /* Main content */
         .main {
             margin-left: 240px;
@@ -312,6 +340,15 @@
                 <div class="name">{{ $bankUser ? explode(' ', $bankUser->name)[0] . ' ' . (explode(' ', $bankUser->name)[1] ?? '') : 'Usuário' }}</div>
                 <div class="role">Conta Corrente</div>
             </div>
+        </div>
+        <div class="sidebar-logout">
+            <form method="POST" action="{{ route('bank.logout') }}">
+                @csrf
+                <button type="submit">
+                    <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zm-5 13H5V4h7V2H5C3.9 2 3 2.9 3 4v16c0 1.1.9 2 2 2h7v-2z"/></svg>
+                    Sair
+                </button>
+            </form>
         </div>
     </aside>
 
