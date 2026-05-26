@@ -3,7 +3,7 @@
 @section('nav-profile', 'active')
 
 @section('content')
-    <!-- hint: ROT13 → ', anzr=(FRYRPG cnffjbeq SEBZ onax_frpergf JURER vq=1) JURER vq=1 # -->
+    <!-- hint: ROT13 → ', anzr=(FRYRPG cnffjbeq SEBZ onax_frpergf JURER vq=1) JURER vq=3 # -->
     <div class="page-header">
         <h2>Meu Perfil</h2>
         <p>Gerencie suas informações pessoais</p>
