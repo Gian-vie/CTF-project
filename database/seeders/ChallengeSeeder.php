@@ -52,6 +52,13 @@ class ChallengeSeeder extends Seeder
                 'points' => 200,
                 'category' => 'Broken Access Control',
             ],
+            [
+                'title' => 'Interceptação de Código de Verificação',
+                'description' => 'O sistema de troca de senha envia um código de verificação. Será que ele está realmente seguro no transporte?',
+                'flag' => 'FLAG{intercepted_verification_code_7e2a}',
+                'points' => 150,
+                'category' => 'Information Disclosure',
+            ],
         ];
 
         foreach ($challenges as $challenge) {

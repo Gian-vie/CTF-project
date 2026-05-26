@@ -51,6 +51,10 @@ Route::prefix('bank')->group(function () {
         Route::get('/', [BankDashboardController::class, 'index'])->name('bank.dashboard');
         Route::get('/profile', [BankProfileController::class, 'index'])->name('bank.profile');
         Route::post('/profile', [BankProfileController::class, 'update'])->name('bank.profile.update');
+        Route::post('/profile/password-request', [BankProfileController::class, 'passwordRequest'])->name('bank.profile.password.request');
+        Route::post('/profile/password-confirm', [BankProfileController::class, 'passwordConfirm'])->name('bank.profile.password.confirm');
+        Route::post('/profile/password-resend', [BankProfileController::class, 'passwordResend'])->name('bank.profile.password.resend');
+        Route::post('/profile/password-cancel', [BankProfileController::class, 'passwordCancel'])->name('bank.profile.password.cancel');
         Route::get('/caixinha', [BankCaixinhaController::class, 'index'])->name('bank.caixinha');
         Route::post('/caixinha/depositar', [BankCaixinhaController::class, 'deposit'])->name('bank.caixinha.deposit');
         Route::post('/caixinha/resgatar', [BankCaixinhaController::class, 'withdraw'])->name('bank.caixinha.withdraw');
