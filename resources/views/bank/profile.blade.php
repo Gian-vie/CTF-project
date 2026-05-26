@@ -24,8 +24,7 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
         <div class="panel">
             <h3>Informações Pessoais</h3>
-            {{-- VULNERABILIDADE: XSS — nome renderizado sem escape --}}
-            <p style="color: var(--neon-purple); margin-bottom: 1rem;">Olá, {!! $user->name !!}</p>
+            <p style="color: var(--neon-purple); margin-bottom: 1rem;">Olá, {{ $user->name }}</p>
             <form method="POST" action="{{ route('bank.profile.update') }}">
                 @csrf
                 <div class="form-group">

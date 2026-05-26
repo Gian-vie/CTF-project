@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Bank;
 
 use App\Http\Controllers\Controller;
-use App\Models\BankAccount;
 use App\Models\BankUser;
-use App\Models\Caixinha;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -58,17 +56,9 @@ class BankCaixinhaController extends Controller
     {
         $request->validate(['amount' => 'required|numeric|min:0.01']);
 
-        // VULNERABILIDADE: Broken Access Control
-        // Aceita caixinha_id do request — permite resgatar de qualquer caixinha
-        $caixinhaId = $request->input('caixinha_id');
-
-        if ($caixinhaId) {
-            $caixinha = Caixinha::find($caixinhaId);
-        } else {
-            $user = BankUser::find(session('bank_user_id'));
-            $account = $user->accounts()->first();
-            $caixinha = $account->caixinha;
-        }
+        $user = BankUser::find(session('bank_user_id'));
+        $account = $user->accounts()->first();
+        $caixinha = $account->caixinha;
 
         if (!$caixinha) {
             return back()->withErrors(['amount' => 'Caixinha não encontrada.']);
@@ -79,10 +69,6 @@ class BankCaixinhaController extends Controller
         if ($amount > $caixinha->balance) {
             return back()->withErrors(['amount' => 'Saldo insuficiente na caixinha.']);
         }
-
-        // Credita na conta do usuário logado (não do dono da caixinha)
-        $user = BankUser::find(session('bank_user_id'));
-        $account = $user->accounts()->first();
 
         $caixinha->decrement('balance', $amount);
         $account->increment('balance', $amount);

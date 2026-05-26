@@ -43,7 +43,7 @@ use App\Http\Controllers\Bank\BankCaixinhaController;
 Route::prefix('bank')->group(function () {
     // Auth (sem middleware)
     Route::get('/login', [BankAuthController::class, 'showLogin'])->name('bank.login');
-    Route::post('/login', [BankAuthController::class, 'login'])->name('bank.login.submit');
+    Route::post('/login', [BankAuthController::class, 'login'])->middleware('throttle:10,1')->name('bank.login.submit');
     Route::post('/logout', [BankAuthController::class, 'logout'])->name('bank.logout');
 
     // Conta deletada
