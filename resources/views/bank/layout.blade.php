@@ -306,9 +306,10 @@
             </li>
         </ul>
         <div class="sidebar-user">
-            <div class="avatar">JD</div>
+            @php $bankUser = \App\Models\BankUser::find(session('bank_user_id')); @endphp
+            <div class="avatar">{{ $bankUser ? strtoupper(substr($bankUser->name, 0, 1)) . strtoupper(substr(explode(' ', $bankUser->name)[1] ?? '', 0, 1)) : 'U' }}</div>
             <div class="info">
-                <div class="name">João Demo</div>
+                <div class="name">{{ $bankUser ? explode(' ', $bankUser->name)[0] . ' ' . (explode(' ', $bankUser->name)[1] ?? '') : 'Usuário' }}</div>
                 <div class="role">Conta Corrente</div>
             </div>
         </div>
