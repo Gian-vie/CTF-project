@@ -128,4 +128,29 @@ class BankProfileController extends Controller
 
         return back()->with('password_success', 'Senha alterada com sucesso! FLAG{intercepted_verification_code_7e2a}');
     }
+
+    public function deleteAccount()
+    {
+        $user = BankUser::find(session('bank_user_id'));
+        $account = $user->accounts()->first();
+
+        // Verificar se saldo da conta está zerado
+        if ($account && $account->balance > 0) {
+            return back()->with('delete_error', 'Não é possível encerrar a conta. Saldo em conta: R$ ' . number_format($account->balance, 2, ',', '.'));
+        }
+
+        // Verificar se caixinha está vazia
+        if ($account && $account->caixinha && $account->caixinha->balance > 0) {
+            return back()->with('delete_error', 'Não é possível encerrar a conta. Saldo na caixinha: R$ ' . number_format($account->caixinha->balance, 2, ',', '.'));
+        }
+
+        // Soft delete — marcar deleted_at
+        $user->deleted_at = now();
+        $user->save();
+
+        // Deslogar
+        session()->forget('bank_user_id');
+
+        return redirect()->route('bank.login')->with('message', 'Conta encerrada com sucesso.');
+    }
 }

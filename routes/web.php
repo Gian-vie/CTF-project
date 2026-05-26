@@ -46,11 +46,17 @@ Route::prefix('bank')->group(function () {
     Route::post('/login', [BankAuthController::class, 'login'])->name('bank.login.submit');
     Route::post('/logout', [BankAuthController::class, 'logout'])->name('bank.logout');
 
+    // Conta deletada
+    Route::get('/deleted', [BankAuthController::class, 'showDeleted'])->name('bank.deleted');
+    Route::post('/reactivate', [BankAuthController::class, 'reactivate'])->name('bank.reactivate');
+    Route::delete('/permanent-delete', [BankAuthController::class, 'permanentDelete'])->name('bank.permanent.delete');
+
     // Rotas protegidas
     Route::middleware('bank.auth')->group(function () {
         Route::get('/', [BankDashboardController::class, 'index'])->name('bank.dashboard');
         Route::get('/profile', [BankProfileController::class, 'index'])->name('bank.profile');
         Route::post('/profile', [BankProfileController::class, 'update'])->name('bank.profile.update');
+        Route::delete('/profile', [BankProfileController::class, 'deleteAccount'])->name('bank.profile.delete');
         Route::post('/profile/password-request', [BankProfileController::class, 'passwordRequest'])->name('bank.profile.password.request');
         Route::post('/profile/password-confirm', [BankProfileController::class, 'passwordConfirm'])->name('bank.profile.password.confirm');
         Route::post('/profile/password-resend', [BankProfileController::class, 'passwordResend'])->name('bank.profile.password.resend');

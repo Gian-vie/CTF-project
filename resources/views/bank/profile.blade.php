@@ -46,6 +46,18 @@
                 </div>
                 <button type="submit" class="btn-purple">Salvar Alterações</button>
             </form>
+
+            {{-- Encerrar conta --}}
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--dark-border);">
+                @if (session('delete_error'))
+                    <div style="background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #ff5252; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                        {{ session('delete_error') }}
+                    </div>
+                @endif
+                <button type="button" onclick="document.getElementById('delete-modal').style.display='flex'" style="background: none; border: 1px solid #ff5252; color: #ff5252; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.85rem;">
+                    Encerrar Conta
+                </button>
+            </div>
         </div>
 
         <div class="panel">
@@ -178,6 +190,31 @@
                         <td>{{ $account->created_at->translatedFormat('F/Y') }}</td>
                     </tr>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal de confirmação de exclusão --}}
+    <div id="delete-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index:9999;">
+        <div style="background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 1rem; padding: 2rem; max-width: 420px; width: 90%; text-align: center;">
+            <h3 style="color: #ff5252; margin-bottom: 1rem;">Encerrar Conta</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Tem certeza que deseja encerrar sua conta? Sua conta será desativada e você não poderá acessá-la até reativá-la.
+            </p>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.85rem;">
+                <strong style="color: #ff5252;">Atenção:</strong> Para encerrar, o saldo em conta e na caixinha devem estar zerados.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="document.getElementById('delete-modal').style.display='none'" style="background: var(--dark-bg); border: 1px solid var(--dark-border); color: var(--text-muted); padding: 0.6rem 1.2rem; border-radius: 0.5rem; cursor: pointer;">
+                    Cancelar
+                </button>
+                <form method="POST" action="{{ route('bank.profile.delete') }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background: #ff5252; border: none; color: white; padding: 0.6rem 1.2rem; border-radius: 0.5rem; cursor: pointer; font-weight: bold;">
+                        Confirmar Encerramento
+                    </button>
+                </form>
             </div>
         </div>
     </div>

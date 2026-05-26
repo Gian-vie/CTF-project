@@ -124,6 +124,12 @@
         <!-- - TODO: remover conta de teste admin@daads.com -->
 
         <div class="login-card">
+            @if (session('message'))
+                <div style="background: rgba(0,200,83,0.1); border: 1px solid rgba(0,200,83,0.3); color: #00c853; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; margin-bottom: 1rem;">
+                    {{ session('message') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="error-msg">
                     {{ $errors->first() }}

@@ -160,5 +160,28 @@ class BankSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        // === Correntista 4: Pedro (conta deletável — saldo zerado) ===
+        $pedro = BankUser::create([
+            'name' => 'Pedro Deletável',
+            'email' => 'pedro.deletavel@email.com',
+            'password' => Hash::make('pedro123'),
+            'cpf' => '111.222.333-44',
+            'phone' => '(11) 97777-2222',
+        ]);
+
+        $contaPedro = BankAccount::create([
+            'bank_user_id' => $pedro->id,
+            'account_number' => '00055123-3',
+            'agency' => '0001',
+            'balance' => 0.00,
+            'type' => 'corrente',
+        ]);
+
+        Caixinha::create([
+            'bank_account_id' => $contaPedro->id,
+            'balance' => 0.00,
+            'total_yield' => 0.00,
+        ]);
     }
 }

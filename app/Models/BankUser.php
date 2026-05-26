@@ -15,10 +15,15 @@ class BankUser extends Model
         'password',
         'cpf',
         'phone',
+        'deleted_at',
     ];
 
     protected $hidden = [
         'password',
+    ];
+
+    protected $dates = [
+        'deleted_at',
     ];
 
     public function accounts()
