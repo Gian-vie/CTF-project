@@ -34,9 +34,25 @@ require __DIR__.'/auth.php';
 Route::get('/judge', [JudgeController::class, 'index'])->name('judge');
 Route::post('/judge', [JudgeController::class, 'submit'])->name('judge.submit');
 
-// DAADS Bank (mock frontend)
+// DAADS Bank
+use App\Http\Controllers\Bank\BankAuthController;
+use App\Http\Controllers\Bank\BankDashboardController;
+use App\Http\Controllers\Bank\BankProfileController;
+use App\Http\Controllers\Bank\BankCaixinhaController;
+
 Route::prefix('bank')->group(function () {
-    Route::get('/', fn () => view('bank.dashboard'))->name('bank.dashboard');
-    Route::get('/profile', fn () => view('bank.profile'))->name('bank.profile');
-    Route::get('/caixinha', fn () => view('bank.caixinha'))->name('bank.caixinha');
+    // Auth (sem middleware)
+    Route::get('/login', [BankAuthController::class, 'showLogin'])->name('bank.login');
+    Route::post('/login', [BankAuthController::class, 'login'])->name('bank.login.submit');
+    Route::post('/logout', [BankAuthController::class, 'logout'])->name('bank.logout');
+
+    // Rotas protegidas
+    Route::middleware('bank.auth')->group(function () {
+        Route::get('/', [BankDashboardController::class, 'index'])->name('bank.dashboard');
+        Route::get('/profile', [BankProfileController::class, 'index'])->name('bank.profile');
+        Route::post('/profile', [BankProfileController::class, 'update'])->name('bank.profile.update');
+        Route::get('/caixinha', [BankCaixinhaController::class, 'index'])->name('bank.caixinha');
+        Route::post('/caixinha/depositar', [BankCaixinhaController::class, 'deposit'])->name('bank.caixinha.deposit');
+        Route::post('/caixinha/resgatar', [BankCaixinhaController::class, 'withdraw'])->name('bank.caixinha.withdraw');
+    });
 });

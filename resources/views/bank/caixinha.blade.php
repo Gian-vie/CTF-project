@@ -8,52 +8,68 @@
         <p>Guarde dinheiro e veja seu saldo render automaticamente</p>
     </div>
 
+    @if (session('success'))
+        <div style="background: rgba(0,200,83,0.1); border: 1px solid rgba(0,200,83,0.3); color: #00c853; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div style="background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #ff5252; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <div class="cards-grid">
         <div class="card">
             <div class="card-label">Saldo na Caixinha</div>
-            <div class="card-value purple">R$ 3.200,00</div>
+            <div class="card-value purple">R$ {{ $caixinha ? number_format($caixinha->balance, 2, ',', '.') : '0,00' }}</div>
             <div class="card-sub">Rendimento: 102% do CDI</div>
         </div>
         <div class="card">
             <div class="card-label">Rendimento Total</div>
-            <div class="card-value">R$ 84,20</div>
+            <div class="card-value">R$ {{ $caixinha ? number_format($caixinha->total_yield, 2, ',', '.') : '0,00' }}</div>
             <div class="card-sub">Desde o primeiro depósito</div>
         </div>
         <div class="card">
-            <div class="card-label">Rendimento Mensal</div>
-            <div class="card-value">R$ 18,40</div>
-            <div class="card-sub">Maio/2026</div>
+            <div class="card-label">Saldo Conta Corrente</div>
+            <div class="card-value">R$ {{ number_format($account->balance, 2, ',', '.') }}</div>
+            <div class="card-sub">Disponível para depósito</div>
         </div>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
         <div class="panel">
             <h3>Depositar na Caixinha</h3>
-            <form>
+            <form method="POST" action="{{ route('bank.caixinha.deposit') }}">
+                @csrf
                 <div class="form-group">
                     <label>Valor do Depósito</label>
-                    <input type="text" placeholder="R$ 0,00">
+                    <input type="number" step="0.01" name="amount" placeholder="0.00">
                 </div>
                 <div class="form-group">
                     <label>Origem</label>
-                    <input type="text" value="Conta Corrente • ****7842" disabled>
+                    <input type="text" value="Conta {{ ucfirst($account->type) }} • ****{{ substr($account->account_number, -4) }}" disabled>
                 </div>
-                <button type="button" class="btn-purple">Depositar</button>
+                <button type="submit" class="btn-purple">Depositar</button>
             </form>
         </div>
 
         <div class="panel">
             <h3>Resgatar da Caixinha</h3>
-            <form>
+            <form method="POST" action="{{ route('bank.caixinha.withdraw') }}">
+                @csrf
+                {{-- VULNERABILIDADE: campo hidden caixinha_id manipulável --}}
+                <input type="hidden" name="caixinha_id" value="{{ $caixinha ? $caixinha->id : '' }}">
                 <div class="form-group">
                     <label>Valor do Resgate</label>
-                    <input type="text" placeholder="R$ 0,00">
+                    <input type="number" step="0.01" name="amount" placeholder="0.00">
                 </div>
                 <div class="form-group">
                     <label>Destino</label>
-                    <input type="text" value="Conta Corrente • ****7842" disabled>
+                    <input type="text" value="Conta {{ ucfirst($account->type) }} • ****{{ substr($account->account_number, -4) }}" disabled>
                 </div>
-                <button type="button" class="btn-purple">Resgatar</button>
+                <button type="submit" class="btn-purple">Resgatar</button>
             </form>
         </div>
     </div>
@@ -66,34 +82,22 @@
                     <th>Operação</th>
                     <th>Data</th>
                     <th>Valor</th>
-                    <th>Saldo Após</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse ($history as $tx)
                 <tr>
-                    <td><span class="badge badge-success">Depósito</span></td>
-                    <td>15/05/2026</td>
-                    <td style="color: #00c853;">+ R$ 500,00</td>
-                    <td>R$ 3.200,00</td>
+                    <td><span class="badge badge-success">{{ $tx->description }}</span></td>
+                    <td>{{ $tx->created_at->format('d/m/Y') }}</td>
+                    <td style="color: {{ $tx->amount < 0 ? '#ff5252' : '#00c853' }};">
+                        {{ $tx->amount < 0 ? '-' : '+' }} R$ {{ number_format(abs($tx->amount), 2, ',', '.') }}
+                    </td>
                 </tr>
+                @empty
                 <tr>
-                    <td><span class="badge badge-pending">Rendimento</span></td>
-                    <td>01/05/2026</td>
-                    <td style="color: #00c853;">+ R$ 18,40</td>
-                    <td>R$ 2.700,00</td>
+                    <td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhuma operação encontrada.</td>
                 </tr>
-                <tr>
-                    <td><span class="badge badge-success">Depósito</span></td>
-                    <td>10/04/2026</td>
-                    <td style="color: #00c853;">+ R$ 1.000,00</td>
-                    <td>R$ 2.681,60</td>
-                </tr>
-                <tr>
-                    <td><span class="badge badge-success">Depósito</span></td>
-                    <td>01/03/2026</td>
-                    <td style="color: #00c853;">+ R$ 1.500,00</td>
-                    <td>R$ 1.681,60</td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

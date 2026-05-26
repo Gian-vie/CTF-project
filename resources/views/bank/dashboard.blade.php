@@ -3,21 +3,22 @@
 @section('nav-dashboard', 'active')
 
 @section('content')
+    <!-- FLAG{html_source_hidden_comment_4d3f} -->
     <div class="page-header">
         <h2>Dashboard</h2>
-        <p>Bem-vindo de volta, João. Aqui está o resumo da sua conta.</p>
+        <p>Bem-vindo de volta, {{ $account->user->name }}. Aqui está o resumo da sua conta.</p>
     </div>
 
     <div class="cards-grid">
         <div class="card">
             <div class="card-label">Saldo Disponível</div>
-            <div class="card-value purple">R$ 12.450,00</div>
-            <div class="card-sub">Conta Corrente • ****7842</div>
+            <div class="card-value purple">R$ {{ number_format($account->balance, 2, ',', '.') }}</div>
+            <div class="card-sub">Conta {{ ucfirst($account->type) }} • ****{{ substr($account->account_number, -4) }}</div>
         </div>
         <div class="card">
             <div class="card-label">Caixinha</div>
-            <div class="card-value">R$ 3.200,00</div>
-            <div class="card-sub">Rendimento: +R$ 18,40 este mês</div>
+            <div class="card-value">R$ {{ $caixinha ? number_format($caixinha->balance, 2, ',', '.') : '0,00' }}</div>
+            <div class="card-sub">Rendimento: +R$ {{ $caixinha ? number_format($caixinha->total_yield, 2, ',', '.') : '0,00' }}</div>
         </div>
         <div class="card">
             <div class="card-label">Cartão de Crédito</div>
@@ -38,36 +39,20 @@
                 </tr>
             </thead>
             <tbody>
+                @forelse ($transactions as $tx)
                 <tr>
-                    <td>PIX - Maria Silva</td>
-                    <td>22/05/2026</td>
-                    <td style="color: #ff5252;">- R$ 150,00</td>
+                    <td>{{ $tx->description }}</td>
+                    <td>{{ $tx->created_at->format('d/m/Y') }}</td>
+                    <td style="color: {{ $tx->amount < 0 ? '#ff5252' : '#00c853' }};">
+                        {{ $tx->amount < 0 ? '-' : '+' }} R$ {{ number_format(abs($tx->amount), 2, ',', '.') }}
+                    </td>
                     <td><span class="badge badge-success">Concluído</span></td>
                 </tr>
+                @empty
                 <tr>
-                    <td>Salário - Empresa XYZ</td>
-                    <td>20/05/2026</td>
-                    <td style="color: #00c853;">+ R$ 5.400,00</td>
-                    <td><span class="badge badge-success">Concluído</span></td>
+                    <td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma transação encontrada.</td>
                 </tr>
-                <tr>
-                    <td>Netflix</td>
-                    <td>18/05/2026</td>
-                    <td style="color: #ff5252;">- R$ 55,90</td>
-                    <td><span class="badge badge-success">Concluído</span></td>
-                </tr>
-                <tr>
-                    <td>Transferência - Caixinha</td>
-                    <td>15/05/2026</td>
-                    <td style="color: #ff5252;">- R$ 500,00</td>
-                    <td><span class="badge badge-pending">Processando</span></td>
-                </tr>
-                <tr>
-                    <td>Supermercado BomPreço</td>
-                    <td>14/05/2026</td>
-                    <td style="color: #ff5252;">- R$ 287,30</td>
-                    <td><span class="badge badge-success">Concluído</span></td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
