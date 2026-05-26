@@ -30,6 +30,7 @@ class BankAuthController extends Controller
                 return redirect()->route('bank.deleted');
             }
 
+            session()->regenerate();
             session(['bank_user_id' => $user->id]);
             return redirect()->route('bank.dashboard');
         }
@@ -88,7 +89,8 @@ class BankAuthController extends Controller
 
     public function logout()
     {
-        session()->forget('bank_user_id');
+        session()->invalidate();
+        session()->regenerateToken();
         return redirect()->route('bank.login');
     }
 }
