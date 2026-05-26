@@ -11,14 +11,11 @@
             background: #0a0a0a;
             color: #00ff41;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
         .container {
-            max-width: 600px;
-            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
         h1 {
             text-align: center;
@@ -29,60 +26,102 @@
         .subtitle {
             text-align: center;
             color: #888;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        .card {
+        .challenges-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .challenge-card {
             background: #111;
-            border: 1px solid #00ff41;
+            border: 1px solid #222;
             border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            padding: 24px;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.05);
+            transition: border-color 0.3s;
         }
-        .form-group {
-            margin-bottom: 20px;
+        .challenge-card:hover {
+            border-color: #00ff41;
         }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            color: #00cc33;
+        .challenge-card.solved {
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.03);
         }
-        input, select {
-            width: 100%;
-            padding: 12px;
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .challenge-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00ff41;
+        }
+        .challenge-points {
+            font-size: 0.85rem;
+            color: #ffa500;
+            background: rgba(255, 165, 0, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+        .challenge-category {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .challenge-hint {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: #0d0d0d;
+            border-left: 3px solid #00cc33;
+            border-radius: 0 4px 4px 0;
+        }
+        .flag-form {
+            display: flex;
+            gap: 10px;
+        }
+        .flag-form input {
+            flex: 1;
+            padding: 10px 14px;
             background: #1a1a1a;
             border: 1px solid #333;
             border-radius: 4px;
             color: #00ff41;
             font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            font-size: 0.9rem;
         }
-        input:focus, select:focus {
+        .flag-form input:focus {
             outline: none;
             border-color: #00ff41;
             box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
         }
-        select option {
-            background: #1a1a1a;
-            color: #00ff41;
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
+        .flag-form button {
+            padding: 10px 20px;
             background: #00ff41;
             color: #000;
             border: none;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s;
+            transition: background 0.3s;
+            white-space: nowrap;
         }
-        .btn:hover {
+        .flag-form button:hover {
             background: #00cc33;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        .solved-badge {
+            display: inline-block;
+            color: #00ff41;
+            font-size: 0.85rem;
+            margin-top: 10px;
         }
         .alert {
             padding: 12px 16px;
@@ -105,62 +144,70 @@
             border: 1px solid #ffa500;
             color: #ffa500;
         }
-        .challenge-info {
-            font-size: 0.8rem;
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
             color: #666;
-            margin-top: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
         }
+        .back-link:hover { color: #00ff41; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>&#x1f3f4; CTF Judge</h1>
-        <p class="subtitle">Submeta sua flag para validação</p>
+        <p class="subtitle">Submeta suas flags para validação</p>
 
-        <div class="card">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-error">{{ session('error') }}</div>
+        @endif
+        @if(session('warning'))
+            <div class="alert alert-warning">{{ session('warning') }}</div>
+        @endif
+        @if($errors->any())
+            <div class="alert alert-error">
+                @foreach($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
 
-            @if(session('error'))
-                <div class="alert alert-error">{{ session('error') }}</div>
-            @endif
+        <div class="challenges-grid">
+            @foreach($challenges as $challenge)
+                @php
+                    $solved = \App\Models\Submission::where('user_id', auth()->id())
+                        ->where('challenge_id', $challenge->id)
+                        ->where('is_correct', true)
+                        ->exists();
+                @endphp
+                <div class="challenge-card {{ $solved ? 'solved' : '' }}">
+                    <div class="challenge-header">
+                        <span class="challenge-title">{{ $challenge->title }}</span>
+                        <span class="challenge-points">{{ $challenge->points }} pts</span>
+                    </div>
+                    <div class="challenge-category">{{ $challenge->category }}</div>
+                    <div class="challenge-hint"> {{ $challenge->description }}</div>
 
-            @if(session('warning'))
-                <div class="alert alert-warning">{{ session('warning') }}</div>
-            @endif
-
-            @if($errors->any())
-                <div class="alert alert-error">
-                    @foreach($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
+                    @if($solved)
+                        <span class="solved-badge">✅ Resolvido</span>
+                    @else
+                        <form method="POST" action="{{ route('judge.submit') }}" class="flag-form">
+                            @csrf
+                            <input type="hidden" name="challenge_id" value="{{ $challenge->id }}">
+                            <input type="text" name="flag" placeholder="FLAG{...}" required autocomplete="off">
+                            <button type="submit">SUBMETER</button>
+                        </form>
+                    @endif
                 </div>
-            @endif
-
-            <form method="POST" action="{{ route('judge.submit') }}">
-                @csrf
-
-                <div class="form-group">
-                    <label for="challenge_id">Desafio</label>
-                    <select id="challenge_id" name="challenge_id" required>
-                        <option value="">Selecione o desafio...</option>
-                        @foreach($challenges as $challenge)
-                            <option value="{{ $challenge->id }}" {{ old('challenge_id') == $challenge->id ? 'selected' : '' }}>
-                                {{ $challenge->title }} ({{ $challenge->points }}pts) - {{ $challenge->category }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="flag">Flag</label>
-                    <input type="text" id="flag" name="flag" placeholder="CTF{sua_flag_aqui}" required autocomplete="off">
-                </div>
-
-                <button type="submit" class="btn">SUBMETER FLAG</button>
-            </form>
+            @endforeach
         </div>
+
+        <a href="{{ route('dashboard') }}" class="back-link">&larr; Voltar ao Dashboard</a>
     </div>
 </body>
 </html>
