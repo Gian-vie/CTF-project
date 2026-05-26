@@ -5,6 +5,11 @@
 @section('content')
 <!-- FLAG{html_source_hidden_comment_4d3f} -->
 
+<style>
+    .tx-negative { color: #ff5252; }
+    .tx-positive  { color: #00c853; }
+</style>
+
 <div class="page-header">
     <h2>Dashboard</h2>
     <p>Bem-vindo de volta, {{ $account->user->name }}. Aqui está o resumo da sua conta.</p>
@@ -44,7 +49,7 @@
             <tr>
                 <td>{{ $tx->description }}</td>
                 <td>{{ $tx->created_at->format('d/m/Y') }}</td>
-                <td style="color: {{ $tx->amount < 0 ? '#ff5252' : '#00c853' }};">
+                <td class="{{ $tx->amount < 0 ? 'tx-negative' : 'tx-positive' }}">
                     {{ $tx->amount < 0 ? '-' : '+' }} R$ {{ number_format(abs($tx->amount), 2, ',', '.') }}
                 </td>
                 <td><span class="badge badge-success">Concluído</span></td>

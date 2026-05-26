@@ -95,7 +95,11 @@
             @else
             {{-- Etapa 2: Confirmar código --}}
             <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Um código de 6 dígitos foi enviado para seu e-mail. Insira abaixo para confirmar.</p>
-            <div id="timer" style="color: var(--neon-purple); font-size: 0.9rem; margin-bottom: 1rem; font-family: monospace;">Tempo restante: <span id="countdown">05:00</span></div>
+            <div id="timer"
+                data-expires-at="{{ session('bank_password_expires_at', 0) }}"
+                data-sent-at="{{ session('bank_password_code_sent_at', 0) }}"
+                data-profile-url="{{ route('bank.profile') }}"
+                style="color: var(--neon-purple); font-size: 0.9rem; margin-bottom: 1rem; font-family: monospace;">Tempo restante: <span id="countdown">05:00</span></div>
             <form method="POST" action="{{ route('bank.profile.password.confirm') }}">
                 @csrf
                 <div class="form-group">
@@ -120,7 +124,10 @@
             <script>
                 // Timer de 5 minutos
                 (function() {
-                    const expiresAt = {{ session('bank_password_expires_at', 0) }} * 1000;
+                    const timerEl = document.getElementById('timer');
+                    const expiresAt = parseInt(timerEl.dataset.expiresAt, 10) * 1000;
+                    const sentAt   = parseInt(timerEl.dataset.sentAt,    10) * 1000;
+                    const profileUrl = timerEl.dataset.profileUrl;
                     const countdownEl = document.getElementById('countdown');
                     const codeInput = document.getElementById('code-input');
                     const btnConfirm = document.getElementById('btn-confirm');
@@ -139,7 +146,7 @@
                             btnConfirm.disabled = true;
                             btnConfirm.style.opacity = '0.5';
                             // Redireciona após 2s
-                            setTimeout(function() { window.location.href = '{{ route('bank.profile') }}'; }, 2000);
+                            setTimeout(function() { window.location.href = timerEl.dataset.profileUrl; }, 2000);
                             return;
                         }
                         setTimeout(updateTimer, 1000);
@@ -147,7 +154,6 @@
                     updateTimer();
 
                     // Resend timer de 30s
-                    const sentAt = {{ session('bank_password_code_sent_at', 0) }} * 1000;
                     const btnResend = document.getElementById('btn-resend');
                     const resendTimerEl = document.getElementById('resend-timer');
 

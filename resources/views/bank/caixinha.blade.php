@@ -3,6 +3,10 @@
 @section('nav-caixinha', 'active')
 
 @section('content')
+    <style>
+        .tx-negative { color: #ff5252; }
+        .tx-positive  { color: #00c853; }
+    </style>
     <div class="page-header">
         <h2>Caixinha</h2>
         <p>Guarde dinheiro e veja seu saldo render automaticamente</p>
@@ -89,7 +93,7 @@
                 <tr>
                     <td><span class="badge badge-success">{{ $tx->description }}</span></td>
                     <td>{{ $tx->created_at->format('d/m/Y') }}</td>
-                    <td style="color: {{ $tx->amount < 0 ? '#ff5252' : '#00c853' }};">
+                    <td class="{{ $tx->amount < 0 ? 'tx-negative' : 'tx-positive' }}">
                         {{ $tx->amount < 0 ? '-' : '+' }} R$ {{ number_format(abs($tx->amount), 2, ',', '.') }}
                     </td>
                 </tr>
