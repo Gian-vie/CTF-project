@@ -4,6 +4,16 @@
 
 @section('content')
     <!-- FLAG{html_source_hidden_comment_4d3f} -->
+
+    {{-- FLAG 3: IDOR — aparece quando acessando conta de outro usuário --}}
+    @if (request('account_id') && $account->bank_user_id != session('bank_user_id'))
+        <div style="background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); padding: 1rem 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+            <strong style="color: #ff5252;">⚠️ Nota Interna (Confidencial)</strong>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.85rem;">Este registro pertence a outro correntista. Acesso não autorizado detectado.</p>
+            <div style="margin-top: 0.5rem; font-family: monospace; color: #00c853;">FLAG{idor_account_access_broken_a7c2}</div>
+        </div>
+    @endif
+
     <div class="page-header">
         <h2>Dashboard</h2>
         <p>Bem-vindo de volta, {{ $account->user->name }}. Aqui está o resumo da sua conta.</p>

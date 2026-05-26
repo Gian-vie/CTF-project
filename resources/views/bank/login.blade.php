@@ -121,6 +121,7 @@
             <h1>DAADS BANK</h1>
             <p>Acesse sua conta</p>
         </div>
+        <!-- - TODO: remover conta de teste admin@daads.com -->
 
         <div class="login-card">
             @if ($errors->any())
